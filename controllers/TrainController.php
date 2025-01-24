@@ -1,16 +1,20 @@
 <?php
 require_once 'models/Train.php';
 
-class TrainController {
-    public static function index() {
-        echo json_encode(Train::getAll());
+class TrainController
+{
+    public static function index()
+    {
+        echo json_encode(Train::getAllWithRepairs());
     }
 
-    public static function show($id) {
+    public static function show($id)
+    {
         echo json_encode(Train::getById($id));
     }
 
-    public static function store() {
+    public static function store()
+    {
         $data = json_decode(file_get_contents("php://input"), true);
         if (isset($data['name'])) {
             echo json_encode(Train::create($data['name']));
@@ -20,7 +24,8 @@ class TrainController {
         }
     }
 
-    public static function destroy($id) {
+    public static function destroy($id)
+    {
         if (Train::delete($id)) {
             echo json_encode(['success' => 'Train deleted']);
         } else {
@@ -29,4 +34,3 @@ class TrainController {
         }
     }
 }
-?>

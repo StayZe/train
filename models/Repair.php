@@ -13,9 +13,21 @@ class Repair
     public static function create($trainId, $repairType)
     {
         $db = Database::connect();
-        $stmt = $db->prepare("INSERT INTO repairs (train_id, type) VALUES (?, ?) RETURNING id");
-        $stmt->execute([$trainId, $repairType]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Récupérer l'ID du type de réparation depuis repair_types
+        $stmt = $db->prepare("SELECT id FROM repair_types WHERE name = ?");
+        $stmt->execute([$repairType]);
+        $repairTypeId = $stmt->fetchColumn();
+
+        if (!$repairTypeId) {
+            return ['error' => 'Repair type not found'];
+        }
+
+        // Insérer la réparation avec le bon repair_type_id
+        $stmt = $db->prepare("INSERT INTO repairs (train_id, repair_type_id) VALUES (?, ?) RETURNING id");
+        $stmt->execute([$trainId, $repairTypeId]);
+
+        return ['id' => $stmt->fetchColumn(), 'train_id' => $trainId, 'type' => $repairType];
     }
 
     public static function delete($id)
