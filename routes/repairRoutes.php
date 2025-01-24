@@ -1,7 +1,8 @@
 <?php
 require_once 'controllers/RepairController.php';
 
-function handleRepairRoutes($method, $uri) {
+function handleRepairRoutes($method, $uri)
+{
     $parts = explode('/', trim($uri, '/'));
 
     if ($method === 'GET' && count($parts) === 1) {
@@ -15,4 +16,3 @@ function handleRepairRoutes($method, $uri) {
         echo json_encode(['error' => 'Method not allowed']);
     }
 }
-?>
