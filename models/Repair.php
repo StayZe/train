@@ -10,30 +10,27 @@ class Repair
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function create($trainId, $repairType)
+    public static function create($trainId, $repairTypeId)
     {
         $db = Database::connect();
-
-        // Récupérer l'ID du type de réparation depuis repair_types
-        $stmt = $db->prepare("SELECT id FROM repair_types WHERE name = ?");
-        $stmt->execute([$repairType]);
-        $repairTypeId = $stmt->fetchColumn();
-
-        if (!$repairTypeId) {
-            return ['error' => 'Repair type not found'];
-        }
-
-        // Insérer la réparation avec le bon repair_type_id
         $stmt = $db->prepare("INSERT INTO repairs (train_id, repair_type_id) VALUES (?, ?) RETURNING id");
         $stmt->execute([$trainId, $repairTypeId]);
 
-        return ['id' => $stmt->fetchColumn(), 'train_id' => $trainId, 'type' => $repairType];
+        return ['id' => $stmt->fetchColumn(), 'train_id' => $trainId, 'repair_type_id' => $repairTypeId];
     }
+
 
     public static function delete($id)
     {
         $db = Database::connect();
         $stmt = $db->prepare("DELETE FROM repairs WHERE id = ?");
         return $stmt->execute([$id]);
+    }
+
+    public static function getAllRepairTypes()
+    {
+        $db = Database::connect();
+        $stmt = $db->query("SELECT id, name FROM repair_types ORDER BY name ASC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

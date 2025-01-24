@@ -4,7 +4,6 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-// Gérer les requêtes OPTIONS (preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -12,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once 'routes/trainRoutes.php';
 require_once 'routes/repairRoutes.php';
+require_once 'routes/repairTypeRoutes.php';
 
 $requestUri = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
 $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -24,6 +24,9 @@ switch (true) {
         break;
     case strpos($requestUri, '/repairs') === 0:
         handleRepairRoutes($requestMethod, $requestUri);
+        break;
+    case strpos($requestUri, '/repair-types') === 0:  // ✅ Ajout de cette ligne
+        handleRepairTypeRoutes($requestMethod, $requestUri);
         break;
     default:
         http_response_code(404);

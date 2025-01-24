@@ -7,6 +7,8 @@ function handleRepairRoutes($method, $uri)
 
     if ($method === 'GET' && count($parts) === 1) {
         RepairController::index();
+    } elseif ($method === 'GET' && count($parts) === 2 && $parts[1] === 'types') {
+        RepairController::getRepairTypes(); // Récupérer les types de réparations
     } elseif ($method === 'POST') {
         RepairController::store();
     } elseif ($method === 'DELETE' && count($parts) === 2) {

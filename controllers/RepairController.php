@@ -11,13 +11,19 @@ class RepairController
     public static function store()
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        if (isset($data['train_id']) && isset($data['type'])) {
-            echo json_encode(Repair::create($data['train_id'], $data['type']));
-        } else {
+
+        // Ajoute un log pour voir les données reçues
+        error_log("Données reçues : " . json_encode($data));
+
+        if (!isset($data['train_id']) || !isset($data['repair_type_id'])) {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid data']);
+            echo json_encode(['error' => 'Invalid data', 'received' => $data]);
+            return;
         }
+
+        echo json_encode(Repair::create($data['train_id'], $data['repair_type_id']));
     }
+
 
     public static function destroy($id)
     {
@@ -27,5 +33,10 @@ class RepairController
             http_response_code(400);
             echo json_encode(['error' => 'Delete failed']);
         }
+    }
+
+    public static function getRepairTypes()
+    {
+        echo json_encode(Repair::getAllRepairTypes());
     }
 }
